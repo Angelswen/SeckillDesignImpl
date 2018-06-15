@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+       	http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	<!-- 自动扫描控制器包 -->
+	<context:component-scan base-package="com.vechace.controller.*" />
+	<!-- 设置默认配置方案 -->
+	<mvc:annotation-driven />
+	<!-- 使用默认的Servlet来响应静态文件 -->
+	<mvc:default-servlet-handler/>
+	
+	<!-- 配置视图渲染器 -->
+	<bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+		<!-- 结果视图的前缀 -->
+	    <property name="prefix" value="/WEB-INF/jsp/" />
+	    <!-- 结果视图的后缀 -->
+		 <property name="suffix" value=".jsp"/>
+    </bean>
+    
+    <!-- 配置json --> 
+	<!-- 用于将对象转换为json -->
+    <bean id="stringConverter"
+    	class="org.springframework.http.converter.StringHttpMessageConverter">
+    	<property name="supportedMediaTypes">
+    		<list>
+    			<value>text/plain;charset=UTF-8</value>
+    		</list>
+    	</property>
+    </bean>
+    <bean id="jsonConverter"
+    	class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="stringConverter" />
+				<ref bean="jsonConverter" />
+			</list>
+		</property>
+	</bean>
+	
+    <!-- SpringMVC 拦截器配置 -->
+    <!--<mvc:interceptors>
+    	<mvc:interceptor>
+    	<mvc:mapping path="/**"/>
+    	<mvc:exclude-mapping path="/getMainPageAfterLogin"/>
+    	<mvc:exclude-mapping path="/doLoginHandler"/>
+    	<mvc:exclude-mapping path="/getMainPage"/>
+    	
+    	<bean class = ""/>
+    	</mvc:interceptor>
+    </mvc:interceptors>-->
+    
+ </beans>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+       	http://mybatis.org/schema/mybatis-spring
+       	http://mybatis.org/schema/mybatis-spring.xsd">
+     
+    
+    <!-- 连接数据源 -->    
+  	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/seckilldb" />
+		<property name="username" value="root" />
+		<property name="password" value="123456" />
+	</bean>
+	
+	<!-- 配置SqlSessionFactory -->
+	<!--<bean id = "sqlSessionFactory" class = "org.mybatis.spring.SqlSessionFactoryBean"
+		p:dataSource-ref = "dataSource">
+	</bean>-->
+	
+	<!-- 配置声明式事务管理 -->
+	<!-- mybatis的JDBC事务 -->
+	<bean id = "transactionManager" class = "org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		p:dataSource-ref = "dataSource">
+	</bean>
+	<!-- 启动支持annotation注解方式事务管理 -->
+	<tx:annotation-driven transaction-manager = "transactionManager"/>
+	
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<!-- 用于配置详细的事务定义 -->
+		<tx:attributes>
+			<!-- 所有以'get'开头的方法是read-only的 -->
+			<tx:method name="get*" read-only="true" />
+			<!-- 其他方法使用默认的事务设置，指定超时时长为60秒 -->
+			<tx:method name="*" isolation="DEFAULT" propagation="REQUIRED" timeout="60"/>
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- AOP配置的元素 -->
+	<aop:config>
+		<!-- 配置切入点 -->
+		<aop:pointcut expression="execution(* com.vechace.service.*.*(..))" id="myPointcut" />
+		<!-- 指定在myPointcut切入点应用txAdvice事务增强处理 -->
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="myPointcut" />
+	</aop:config>
+	
+	<!-- 扫描包 -->
+	<context:component-scan base-package = "com.vechace.dao.*"/>
+	<context:component-scan base-package = "com.vechace.service.*"/>
+	<context:component-scan base-package = "com.vechace.utils.*" />
+	
+</beans>
