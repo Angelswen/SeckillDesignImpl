@@ -9,7 +9,13 @@ eclipse + tomcat8 + jdk8
 
 Spring + Spring MVC + Redis + MySQL
 
-技术选型：为什么选择Redis，可参考这篇文章：[技术选型：redis与memcache](https://www.jianshu.com/p/774171cd2d5a)
+技术选型：为什么选择Redis？
+- 数据类型丰富（string,hash,list,set,sorted list），可根据业务选择不同的数据类型；
+- 单线程，不存在锁竞争现象，实现相对容易，代码简洁，可读性强；
+- 可持久化，redis提供了两种持久化方式RDB,AOF,可防止数据丢失
+- 高可用（从后期业务扩展角度考虑），redis支持集群功能，可以实现主从复制，读写分离，提供哨兵机制等等
+
+详细可参考这篇文章：[技术选型：redis与memcache](https://www.jianshu.com/p/774171cd2d5a)
 
 **内容概述**
 
