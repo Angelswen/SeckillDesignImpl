@@ -9,6 +9,8 @@ eclipse + tomcat8 + jdk8
 
 Spring + Spring MVC + Redis + MySQL
 
+技术选型：为什么选择Redis，可参考这篇文章：[技术选型：redis与memcache](https://www.jianshu.com/p/774171cd2d5a)
+
 **内容概述**
 
 对高并发业务场景进行分析，以解决秒杀系统核心问题为目的，设计一个秒杀系统，分析秒杀业务场景，提供一种可行的解决方案，达到限流、分流效果，进而提升系统性能：
@@ -220,13 +222,13 @@ java实现：
     		return false;
     	}
 
-细节分析：推荐使用组合指令，而不使用两条指令，因为根据Redis压力差而是报告可知，当使用2条set指令时，系统性能可能会下降一半（高并发场景下）。
+细节分析：推荐使用组合指令，而不使用两条指令，因为根据Redis压力测试报告可知，当使用2条set指令时，系统性能可能会下降一半（高并发场景下）。
 
     $ redis-benchmark -t set,lpush -n 100000 -q
     SET: 74239.05 requests per second
     LPUSH: 79239.30 requests per second
 
-redis压力测试报告：https://redis.io/topics/benchmarks
+redis压力测试报告：[how fast is redis?](https://redis.io/topics/benchmarks)
 
 **问题5：数据库请求量巨大**
 
